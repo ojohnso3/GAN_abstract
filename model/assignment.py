@@ -49,11 +49,6 @@ def train(discriminator, generator, d_optimizer, g_optimizer, batch_input):
     # call optimize on the generator and the discriminator
     optimize(tape, generator, generator_loss, g_optimizer)
     optimize(tape, discriminator, discriminator_loss, d_optimizer)
-    #generator_gradients = tape.gradient(generator_loss, generator.trainable_variables)
-    #g_optimizer.apply_gradients(zip(generator_gradients, generator.trainable_variables))
-
-    #discriminator_gradients = tape.gradient(discriminator_loss, discriminator.trainable_variables)
-    #d_optimizer.apply_gradients(zip(discriminator_gradients, discriminator.trainable_variables))
 
     return generator_loss, discriminator_loss
 
@@ -65,11 +60,8 @@ def show_images(images):
     Inputs:
     -images : num_images x num_channels (3) x 128 x 128
     """
-    #print('showing images...')
-    #print('shape of images:',np.shape(images))
-    #print('image pixel values:',images[0,0])
+
     images = np.reshape(images, [images.shape[0], 3, 128, 128])  # images reshape to (BATCH_SIZE, D)
-    #print('images shape:',np.shape(images))
     sqrtn = int(np.ceil(np.sqrt(images.shape[0])))
     dim = 128 #height or width of image
 
@@ -83,7 +75,6 @@ def show_images(images):
         ax.set_xticklabels([])
         ax.set_yticklabels([])
         ax.set_aspect('equal')
-        #print('16 pixels of one image:', img[:16])
         plt.imshow(img.reshape([dim,dim,3]))
     return
 
@@ -100,7 +91,6 @@ def get_data(folder):
     count = 0
     for filename in os.listdir(folder):
         if filename.endswith('.jpg'):
-            #print('image',count)
             count+= 1
             img = Image.open(folder + '/' + filename)
             np_img = np.array(img)
@@ -109,26 +99,15 @@ def get_data(folder):
             break
     train_images = np.array(image_list)
     train_images = np.reshape(train_images, [train_images.shape[0], 3, 128,128]) #how should we be reshaping? this is from lab 8
-    #print('train_images shape:', np.shape(train_images))
     train_images = train_images/255.0
-    # show_images(train_images[0:4])
-    #print('four images:',show_images(train_images[0:4]))
     train_dataset = tf.data.Dataset.from_tensor_slices(train_images)
     return train_dataset
 
 
 def main():
     # Load Abstract datasett
-    #Default
-    # folder = None
 
-    #Nick
-    #folder = '/Users/nickhyland/Desktop/abstract128'
-
-    #Olivia
-    # folder = ?
-
-    #Kevin
+    #folder = '/Users/__/Desktop/abstract128'
     folder = '/content/gdrive/My Drive/abstract1'
     train_dataset = get_data(folder)
     print('Data loaded')
@@ -146,7 +125,6 @@ def main():
     #N_DISCRIM = 5 #use this to train discriminator n times much as generator
     d_optimizer = tf.keras.optimizers.RMSprop(learning_rate = .00001)
     g_optimizer = tf.keras.optimizers.RMSprop(learning_rate = .00005)
-    #optimizer = tf.keras.optimizers.RMSprop(learning_rate = .25)
 
     epoch_n = 0
     d_losses = []
